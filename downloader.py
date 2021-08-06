@@ -18,11 +18,21 @@ def read_config():
     config = configparser.ConfigParser()
     config.read('config.ini')
     url = config['DEFAULT']['url']
-    login_data = {}
+    data = dict((i,{}) for i in supported_site)
     for sec in config.sections():
-        login_data[sec] = {'username':config[sec]['username'],'password':config[sec]['password']}
-    print(f'url:{url}\nlogin_data:{login_data}\n')
-    return url,login_data
+        try:
+            data[sec] = {'username':config[sec]['username'],'password':config[sec]['password']}
+        except Exception as e:
+            print(f'No login info found in {sec};')
+
+    for sec in config.sections():
+        try:
+            data[sec]['url'] = config[sec]['url']
+        except Exception as e:
+            print(f'No url found in {sec};')
+        
+    print(f'url:{url}\ndata:{data}\n')
+    return url,data
 
 
 
